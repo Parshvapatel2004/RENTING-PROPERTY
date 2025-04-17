@@ -1,0 +1,104 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+#link{
+  text-decoration: none;
+}
+
+/* Specifications Section */
+.specifications {
+  background: #f8f9fa;
+  padding: 40px 10px;
+}
+
+/* Scrolling Container */
+.scrolling-container {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+  position: relative;
+  padding: 20px 0;
+}
+
+/* Scrolling Content */
+.scrolling-content {
+  display: flex;
+  gap: 50px;
+  animation: scroll 10s linear infinite;
+}
+
+.spec-box {
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 250px;
+  background: white;
+  padding: 20px; 
+  margin-bottom: 5px;
+  text-align: center;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.spec-box h3 {
+  font-size: 28px;
+  color: #007bff;
+  font-weight: bold;
+}
+
+.spec-box p {
+  font-size: 16px;
+  color: #333;
+}
+
+/* Scrolling Animation */
+@keyframes scroll {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+/* Pause Animation on Hover */
+.scrolling-container:hover .scrolling-content {
+  animation-play-state: paused;
+}
+
+
+/* Property single css for Iamges */
+
+#property-grid {
+  display: grid;
+  margin:auto;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem;
+}
+
+#property-card {
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+#property-card:hover {
+  transform: scale(1.02);
+}
