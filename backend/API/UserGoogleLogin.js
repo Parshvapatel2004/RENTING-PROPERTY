@@ -22,11 +22,9 @@ async function GoogleUserLogin(req, res) {
       firstName: payload.given_name || "",
       lastName: payload.family_name || "",
       email: payload.email,
-      // role: "user",
     };
 
     // Connect to MongoDB
-
     const db = await connectDB();
     const usersCollection = db.collection("Register");
 
@@ -35,24 +33,34 @@ async function GoogleUserLogin(req, res) {
       email: userData.email,
     });
 
-    if (!existingUser) {
+    if (existingUser) {
+      console.log("Existing user found:", existingUser);
+      // User already exists, so use their existing role
+      req.session.user = { session: existingUser, isAuth: true };
+    } else {
       // Insert new user if not found
       await usersCollection.insertOne(userData);
+      req.session.user = { session: userData, isAuth: true };
     }
 
-    // Generate JWT Token
+    // Generate JWT Token using the role from the database (existing or new user)
     const token = jwt.sign(
-      { email: userData.email, role: "user" },
-      "your_jwt_secret",
       {
-        expiresIn: "7d",
-      }
+        email: userData.email,
+        role: existingUser ? existingUser.role : "user",
+      },
+      "your_jwt_secret",
+      { expiresIn: "7d" }
     );
 
-    // Save session
-    req.session.user = { session: userData, isAuth: true };
-
-    res.json({ token, user: userData });
+    // Send the response with the token and user details (including role)
+    res.json({
+      token,
+      userDetails: {
+        session: userData,
+        role: existingUser ? existingUser.role : "user", // Add role to response
+      },
+    });
   } catch (error) {
     console.error(error);
     res.status(400).json({ error: "Invalid Google Token" });

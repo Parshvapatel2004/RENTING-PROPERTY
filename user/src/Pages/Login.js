@@ -59,8 +59,9 @@ function Main() {
         credential: response.credential,
       });
 
+      // Save the token and role to localStorage
       localStorage.setItem("token", res.data.token);
-      localStorage.setItem("role", res.data.userDetails.role);
+      localStorage.setItem("role", res.data.userDetails.role); // Save role
 
       toast.success("Login Successfully!!", {
         onClose: () => window.location.reload(),
@@ -69,6 +70,7 @@ function Main() {
       console.error("Google Login Failed:", error);
     }
   };
+
   return (
     <>
       {" "}

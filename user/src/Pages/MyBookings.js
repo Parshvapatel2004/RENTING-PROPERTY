@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "../Common/Header";
 import Footer from "../Common/Footer";
-import "bootstrap/dist/css/bootstrap.min.css"; // Ensure Bootstrap is imported
+import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -39,7 +39,6 @@ function Main() {
 
   const handleCancelBooking = async (e, requestId) => {
     e.preventDefault();
-
     try {
       await axios.post("http://localhost:8000/cancel_booking", { requestId });
       toast.success("Booking Cancelled Successfully!!", {
@@ -54,17 +53,21 @@ function Main() {
     return new Promise((resolve) => {
       const script = document.createElement("script");
       script.src = src;
-      script.onload = () => {
-        resolve(true);
-      };
-      script.onerror = () => {
-        resolve(false);
-      };
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
       document.body.appendChild(script);
     });
   }
 
-  const displayRazorpay = async (datas) => {
+  const calculateDays = (start, end) => {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    const diffTime = Math.abs(endDate - startDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
+  const displayRazorpay = async (booking) => {
     const res = await loadScript(
       "https://checkout.razorpay.com/v1/checkout.js"
     );
@@ -76,10 +79,14 @@ function Main() {
 
     try {
       // Step 1: Create an order on the backend
+      const days = calculateDays(booking.startDate, booking.endDate);
+      const months = Math.ceil(days / 30); // Round up to nearest full month
+      const totalPrice = months * booking.propertyPrice;
+
       const orderResponse = await axios.post(
         "http://localhost:8000/generateOrderId",
         {
-          totalPrice: datas.propertyPrice,
+          totalPrice: totalPrice,
         }
       );
 
@@ -87,7 +94,6 @@ function Main() {
         toast.error("Failed to get order details. Please try again.");
         return;
       }
-
       // Step 2: Extract order details
       const {
         amount: orderAmount,
@@ -99,7 +105,7 @@ function Main() {
         key: "rzp_test_VQhEfe2NCXbbwI",
         amount: orderAmount.toString(),
         currency: currency,
-        name: "Renting Property",
+        name: "Renting Properties",
         order_id: order_id,
         handler: async function (response) {
           try {
@@ -107,12 +113,12 @@ function Main() {
             const verifyResponse = await axios.post(
               "http://localhost:8000/make_payment",
               {
-                requestId: datas._id,
-                property_Id: datas.property_Id,
-                owner_Id: datas.owner_Id,
-                startDate: datas.startDate,
-                endDate: datas.endDate,
-                amount: datas.propertyPrice,
+                requestId: booking._id,
+                property_Id: booking.property_Id,
+                owner_Id: booking.owner_Id,
+                startDate: booking.startDate,
+                endDate: booking.endDate,
+                amount: totalPrice,
                 transactionId: order_id,
               }
             );
@@ -128,7 +134,7 @@ function Main() {
         prefill: {
           name: "Renting Properties",
           email: "rentingproperties@email.com",
-          contact: "6351118680",
+          contact: "7096894573",
         },
         notes: {
           address: "Ahmedabad",
@@ -152,7 +158,6 @@ function Main() {
       style={{ minHeight: "90vh", marginBottom: "70px" }}
     >
       <h2 className="text-center mb-4">My Bookings</h2>
-
       <div className="table-responsive">
         <table className="table table-bordered table-hover text-center">
           <thead className="thead-dark">
@@ -171,17 +176,17 @@ function Main() {
           <tbody>
             {bookings?.length === 0 ? (
               <tr>
-                <td colSpan="8" className="text-center">
+                <td colSpan="9" className="text-center">
                   No bookings found.
                 </td>
               </tr>
             ) : (
-              bookings?.map((booking, index) => (
-                <tr key={booking.bookingId}>
+              bookings.map((booking, index) => (
+                <tr key={booking._id}>
                   <td>{index + 1}</td>
                   <td>{booking._id}</td>
                   <td>{booking.propertyName}</td>
-                  <td>{booking.propertyPrice}</td>
+                  <td>₹{booking.propertyPrice}</td>
                   <td>{booking.owner_Id}</td>
                   <td>{new Date(booking.startDate).toLocaleDateString()}</td>
                   <td>{new Date(booking.endDate).toLocaleDateString()}</td>
