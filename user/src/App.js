@@ -5,8 +5,6 @@ import Contact from "./Pages/Contact";
 import About from "./Pages/About";
 import Services from "./Pages/Services";
 import NotFound from "./Pages/NotFound";
-// import Ecommerce from "./Pages/Ecommerce";
-// import EcommerceSingle from "./Pages/EcommerceSingle";
 import Faq from "./Pages/Faq";
 import FindProperty from "./Pages/FindProperty";
 import Login from "./Pages/Login";
@@ -31,6 +29,8 @@ import ResetPassword from "./Pages/ResetPassword";
 import MyPayments from "./Pages/MyPayments";
 import EditProperty from "./Pages/EditProperty";
 import ViewPropertyInquires from "./Pages/ViewPropertyInquires";
+import PrivacyPolicy from "./Pages/PrivacyPolicy";
+import TermsAndConditions from "./Pages/TermsConditions";
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -83,11 +83,12 @@ const App = () => {
             <Route path="/properties" element={<Properties />} />
             <Route path="/properties_single" element={<PropertiesSingle />} />
             <Route path="/find_property" element={<FindProperty />} />
-            <Route path="/search_results" element={<SearchResults />} />
             <Route path="/faq" element={<Faq />} />
             <Route path="/forgot_password" element={<ForgotPassword />} />
             <Route path="/verifyOTP" element={<VerifyOTP />} />
             <Route path="/resetPassword" element={<ResetPassword />} />
+            <Route path="/privacy_policy" element={<PrivacyPolicy />} />
+            <Route path="/terms_conditions" element={<TermsAndConditions />} />
 
             {/* user Routes*/}
             <Route

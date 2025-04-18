@@ -99,7 +99,7 @@ function Main() {
         key: "rzp_test_VQhEfe2NCXbbwI",
         amount: orderAmount.toString(),
         currency: currency,
-        name: "Rent it All",
+        name: "Renting Property",
         order_id: order_id,
         handler: async function (response) {
           try {
@@ -128,7 +128,7 @@ function Main() {
         prefill: {
           name: "Renting Properties",
           email: "rentingproperties@email.com",
-          contact: "9856748596",
+          contact: "6351118680",
         },
         notes: {
           address: "Ahmedabad",

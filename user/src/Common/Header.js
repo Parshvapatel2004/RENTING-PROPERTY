@@ -61,7 +61,7 @@ const Header = () => {
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul
               className="navbar-nav me-auto ms-auto"
-              style={{ fontSize: "18px" }}
+              style={{ fontSize: "13px" }}
             >
               <li className="nav-item">
                 <Link className="nav-link text-light" to="/">
