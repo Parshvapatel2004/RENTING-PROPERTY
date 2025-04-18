@@ -13,13 +13,38 @@ function ResetPassword() {
     confirmPassword: "",
   });
 
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({}); // Store validation errors
+
+  const validateForm = () => {
+    let newErrors = {};
+
+    // Password Validation (Minimum 8 Characters + Strong Pattern)
+    const strongPasswordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+
+    if (data.newPassword.length < 8) {
+      newErrors.newPassword = "New Password must be at least 8 characters";
+    } else if (!strongPasswordRegex.test(data.newPassword)) {
+      newErrors.newPassword =
+        "New Password must include uppercase, lowercase, number, and special character";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Returns true if no errors
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    if (!validateForm()) {
+      toast.error("Please fix the errors before submitting");
+      return;
+    }
     if (data.newPassword !== data.confirmPassword) {
       toast.error("Passwords do not match!");
       return;
     }
+    setLoading(true);
 
     try {
       await axios.post("http://localhost:8000/changePassword", data);
@@ -29,6 +54,7 @@ function ResetPassword() {
     } catch (error) {
       toast.error(error.response?.data?.message || "something went wrong!");
     }
+    setLoading(false);
   };
 
   return (
@@ -55,6 +81,12 @@ function ResetPassword() {
                     }
                     required
                   />
+                  {errors.newPassword && (
+                    <small className="text-danger">
+                      {errors.newPassword}
+                      <br />
+                    </small>
+                  )}
                   <input
                     type="password"
                     name="confirmPassword"

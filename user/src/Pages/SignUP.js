@@ -22,7 +22,8 @@ function Main() {
     password: "",
     role: "user",
   });
-  const [loading, setloading] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const [errors, setErrors] = useState({}); // Store validation errors
 
   const validateForm = () => {
@@ -48,9 +49,15 @@ function Main() {
       newErrors.phoneNo = "Phone number must be 10 digits";
     }
 
-    // Password Validation (Minimum 6 Characters)
-    if (data.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
+    // Password Validation (Minimum 8 Characters + Strong Pattern)
+    const strongPasswordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+
+    if (data.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+    } else if (!strongPasswordRegex.test(data.password)) {
+      newErrors.password =
+        "Password must include uppercase, lowercase, number, and special character";
     }
 
     // License ID Validation (Only Required for Owners)
@@ -83,7 +90,7 @@ function Main() {
       toast.error("Please fix the errors before submitting");
       return;
     }
-    setloading(true);
+    setLoading(true);
     try {
       const formData = new FormData();
       formData.append("firstName", data.firstName);
@@ -107,7 +114,7 @@ function Main() {
       console.log(error);
       toast.error(error.response.data.message);
     }
-    setloading(false);
+    setLoading(false);
   };
 
   return (
@@ -228,7 +235,7 @@ function Main() {
                   {/* </div> */}
 
                   <button type="submit" onClick={handleSignUp}>
-                    {loading ? "Sending..." : "SignUP"}
+                    {loading ? "Sending..." : " SignUP"}
                   </button>
                 </form>
                 <p className="text-center pt-2">
